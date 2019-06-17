@@ -1,15 +1,18 @@
 {
   "name": "react-picture-viewer",
   "version": "1.0.0",
-  "description": "react-picture-viewer is an image viewer component encapsulated with React framework.",
-  "main": "index.js",
+  "description": "react-picture-viewer is an image viewer for React.",
+  "main": "dist/ReactPictureViewer.min.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CRONWMMM"
+    "url": "https://github.com/CRONWMMM/react-picture-viewer"
+  },
+  "bugs": {
+    "url": "https://github.com/CRONWMMM/react-picture-viewer/issues"
   },
   "scripts": {
     "clear": "rm -rf dist && mkdir dist",
-    "build": "npm run clear && babel src -d dist",
+    "build": "npm run clear && cross-env NODE_ENV=production webpack --process --config build/build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -19,6 +22,10 @@
   ],
   "author": "mitianyi",
   "license": "ISC",
+  "peerDependencies": {
+    "react": ">=16.0.0",
+    "prop-types": ">=15.7.2"
+  },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.3",
