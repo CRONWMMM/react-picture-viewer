@@ -5,12 +5,10 @@ import { isNaN } from '../libs/utils'
 // style
 import './index.css'
 
-let [ viewportDOM, imgDOM ] = [ null, null ]
-
 class ReactPictureViewer extends React.Component {
 
     static propTypes = {
-        key: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]), // 组件唯一的标识 key
+        id: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]), // 组件唯一的标识 id
         width: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]), // viewport 视口的宽度
         height: PropTypes.oneOfType([ PropTypes.number, PropTypes.string ]), // viewport 视口的高度
         minimum: PropTypes.number, // 缩放的最小尺寸【零点几】
@@ -22,7 +20,7 @@ class ReactPictureViewer extends React.Component {
     }
 
     static defaultProps = {
-        key: 'viewport',
+        id: 'viewport',
         width: '600px',
         height: '400px',
         minimum: 0.8,
@@ -44,23 +42,30 @@ class ReactPictureViewer extends React.Component {
         scale: 1 // 图片缩放比率 minimum - maximum
     }
 
-    componentDidMount() {
-        const { key, width, height, children } = this.props
+    constructor() {
+        super()
+        this.viewportDOM = null
+        this.imgDOM = null
+    }
 
-        viewportDOM = document.getElementById(key)
-        imgDOM = viewportDOM.getElementsByTagName('img')[0]
+    componentDidMount() {
+        const { id, width, height, children: { props: { src } }, center } = this.props
+
+        this.viewportDOM = document.getElementById(id)
+        this.imgDOM = this.viewportDOM.getElementsByTagName('img')[0]
 
         this.initViewport(width, height)
         // 这边需要将滚轮事件使用原生绑定来处理
         // 从而解决新版本 chrome 浏览器带来的 passive event listener
         // 在对图片进行滚动缩放时无法使用 e.preventDefault 来禁用浏览器滚动问题
-        imgDOM.addEventListener('wheel', this.handleMouseWheel, { passive: false })
+        this.imgDOM.addEventListener('wheel', this.handleMouseWheel, { passive: false })
 
-        this.initPictureInfo(children.props.src)
+        this.initPictureInfo(src, center)
     }
 
     componentWillReceiveProps(nextProps) {
-        this.initPictureInfo(nextProps.children.props.src)
+        const { children: { props: { src } }, center } = nextProps
+        this.initPictureInfo(src, center)
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -76,8 +81,8 @@ class ReactPictureViewer extends React.Component {
 
     initViewport = (width, height) => {
         // 如果是字符串，就将字符串作为尺寸设置；否则是数字的话，就在后面加 px 设置
-        viewportDOM.style.width = isNaN(+width) ? width : `${width}px`
-        viewportDOM.style.height = isNaN(+height) ? height: `${height}px`
+        this.viewportDOM.style.width = isNaN(+width) ? width : `${width}px`
+        this.viewportDOM.style.height = isNaN(+height) ? height: `${height}px`
     }
 
     /**
@@ -88,10 +93,11 @@ class ReactPictureViewer extends React.Component {
      * @param center {Boolean} 是否需要设置图片默认位置居中
      */
     initPictureInfo = (src, center = true) => {
+        const imgDOM = this.imgDOM
         if (!imgDOM.clientWidth || !imgDOM.clientHeight) {
-            return setTimeout(this.initPictureInfo, 0, src)
+            return setTimeout(this.initPictureInfo, 0, src, center)
         }
-        this.changeToContain(src, center)
+        center && this.changeToContain(src, center)
     }
 
     /**
@@ -101,6 +107,7 @@ class ReactPictureViewer extends React.Component {
      */
     changeToContain = (src, center = true) => {
         this._getImageOriginSize(src).then(({ width: imageOriginWidth, height: imageOriginHeight }) => {
+            const [ viewportDOM ] = [ this.viewportDOM ]
             const [ viewPortWidth, viewPortHeight ] = [ viewportDOM.clientWidth, viewportDOM.clientHeight ]
             const { imageWidth, imageHeight } = this.recalcImageSizeToContain(imageOriginWidth, imageOriginHeight)
             // 设置图片默认位置居中
@@ -127,6 +134,7 @@ class ReactPictureViewer extends React.Component {
      */
     recalcImageSizeToContain = (imageWidth, imageHeight) => {
         const rate = imageWidth / imageHeight
+        const viewportDOM = this.viewportDOM
         const [ viewPortWidth, viewPortHeight ] = [ viewportDOM.clientWidth, viewportDOM.clientHeight ]
         if (imageWidth > viewPortWidth) {
             imageWidth = viewPortWidth
@@ -152,6 +160,7 @@ class ReactPictureViewer extends React.Component {
      * @param currentTop {Number} 当前 top
      */
     changePosition(currentLeft, currentTop) {
+        const imgDOM = this.imgDOM
         imgDOM.style.top = `${currentTop}px`
         imgDOM.style.left = `${currentLeft}px`
     }
@@ -162,6 +171,7 @@ class ReactPictureViewer extends React.Component {
      * @param height
      */
     changeSize(width, height) {
+        const imgDOM = this.imgDOM
         imgDOM.style.maxWidth = imgDOM.style.maxHeight = 'none'
         imgDOM.style.width = `${width}px`
         imgDOM.style.height = `${height}px`
@@ -173,9 +183,9 @@ class ReactPictureViewer extends React.Component {
      */
     handleMouseDown = (e) => {
         const currentDOM = e.target || e.toElement
-        if (currentDOM !== imgDOM) return
+        if (currentDOM !== this.imgDOM) return
 
-        let { top: startY, left: startX } = this._getOffsetInElement(e, viewportDOM)
+        let { top: startY, left: startX } = this._getOffsetInElement(e, this.viewportDOM)
         this.setState({
             focus: true,
             startX,
@@ -191,7 +201,7 @@ class ReactPictureViewer extends React.Component {
         const { focus, startX, startY, startTop, startLeft } = this.state
         if (!focus) return
 
-        let { left: currentX, top: currentY } = this._getOffsetInElement(e, viewportDOM)
+        let { left: currentX, top: currentY } = this._getOffsetInElement(e, this.viewportDOM)
         let [ diffX, diffY ] = [ currentX - startX, currentY - startY ]
 
         this.setState({
@@ -226,6 +236,7 @@ class ReactPictureViewer extends React.Component {
      * @param e {Event Object} 事件对象
      */
     handleMouseWheel = (e) => {
+        const imgDOM = this.imgDOM
         const { minimum, maximum, rate } = this.props
         const { imageWidth: originWidth, imageHeight: originHeight, currentLeft, currentTop, scale: lastScale } = this.state
         const [ imageWidth, imageHeight ] = [ imgDOM.clientWidth, imgDOM.clientHeight ]
@@ -248,7 +259,7 @@ class ReactPictureViewer extends React.Component {
         let currentImageWidth = nextScale * originWidth
         let currentImageHeight = nextScale * originHeight
 
-        let { left, top } = this._getOffsetInElement(e, imgDOM)
+        let { left, top } = this._getOffsetInElement(e, this.imgDOM)
         let rateX = left / imageWidth
         let rateY = top / imageHeight
         let newLeft = rateX * currentImageWidth
@@ -344,9 +355,9 @@ class ReactPictureViewer extends React.Component {
     }
 
     render() {
-        const { key, children, className } = this.props
+        const { id, children, className } = this.props
         return (
-          <div id={key}
+          <div id={id}
                className={`react-picture-viewer ${className}`}
                onMouseLeave={this.handleMouseLeave}
                onMouseDown={this.handleMouseDown}

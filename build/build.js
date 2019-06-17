@@ -1,6 +1,5 @@
 const path = require('path')
 const OptimizeCss = require('optimize-css-assets-webpack-plugin')
-const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
     mode: 'production',
@@ -33,34 +32,23 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: ExtractTextWebpackPlugin.extract({
-                    fallback: {
-                        loader: 'style-loader',
+                use: [
+                    'style-loader?singleton=true',
+                    'css-loader',
+                    {
+                        loader: 'postcss-loader',
                         options: {
-                            singleton: true
+                            ident: 'postcss',
+                            plugins: [
+                                require('postcss-cssnext')()
+                            ]
                         }
-                    },
-                    use: [
-                        'css-loader',
-                        {
-                            loader: 'postcss-loader',
-                            options: {
-                                ident: 'postcss',
-                                plugins: [
-                                    require('postcss-cssnext')()
-                                ]
-                            }
-                        }
-                    ]
-                })
+                    }
+                ]
             }
         ]
     },
     plugins: [
-        new ExtractTextWebpackPlugin({
-            filename: 'ReactPictureViewer.css',
-            allChunks: true
-        }),
         new OptimizeCss()
     ]
 }
