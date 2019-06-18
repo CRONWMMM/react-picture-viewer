@@ -16,7 +16,8 @@ class ReactPictureViewer extends React.Component {
         rate: PropTypes.number, // 缩放的速率
         children: PropTypes.object.isRequired, // slot 插槽
         className: PropTypes.string, // className
-        center: PropTypes.bool // 图片位置是否初始居中
+        center: PropTypes.bool, // 图片位置是否初始居中
+        contain: PropTypes.bool // 图片尺寸是否初始包含在视口范围内
     }
 
     static defaultProps = {
@@ -26,7 +27,8 @@ class ReactPictureViewer extends React.Component {
         minimum: 0.8,
         maximum: 8,
         rate: 10,
-        center: true
+        center: true,
+        contain: true
     }
 
     state = {
@@ -49,7 +51,7 @@ class ReactPictureViewer extends React.Component {
     }
 
     componentDidMount() {
-        const { id, width, height, children: { props: { src } }, center } = this.props
+        const { id, width, height } = this.props
 
         this.viewportDOM = document.getElementById(id)
         this.imgDOM = this.viewportDOM.getElementsByTagName('img')[0]
@@ -60,12 +62,14 @@ class ReactPictureViewer extends React.Component {
         // 在对图片进行滚动缩放时无法使用 e.preventDefault 来禁用浏览器滚动问题
         this.imgDOM.addEventListener('wheel', this.handleMouseWheel, { passive: false })
 
-        this.initPictureInfo(src, center)
+        this.initPicture()
     }
 
     componentWillReceiveProps(nextProps) {
-        const { children: { props: { src } }, center } = nextProps
-        this.initPictureInfo(src, center)
+        const { children: { props: { src } }, contain, center } = nextProps
+
+        contain && this.changeToContain(src)
+        center && this.changeToCenter()
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -89,40 +93,67 @@ class ReactPictureViewer extends React.Component {
      * 图片初始化，包括：
      * 1. 初始图片位置居中
      * 2. 记录初始图片尺寸
-     * @param src {String} 需要操作的图片的 src
-     * @param center {Boolean} 是否需要设置图片默认位置居中
+     * @param nextProps
      */
-    initPictureInfo = (src, center = true) => {
+    initPicture = (nextProps) => {
+        nextProps = nextProps || this.props
+
+        const { children: { props: { src } }, center, contain } = nextProps
         const imgDOM = this.imgDOM
-        if (!imgDOM.clientWidth || !imgDOM.clientHeight) {
-            return setTimeout(this.initPictureInfo, 0, src, center)
+        const imageWidth = imgDOM.clientWidth
+        const imageHeight = imgDOM.clientHeight
+        if (!imageWidth || !imageHeight) {
+            return setTimeout(this.initPicture, 0, nextProps)
         }
-        center && this.changeToContain(src, center)
+        if (contain) {
+            this.changeToContain(src)
+        } else {
+            this.setState({
+                scale: 1,
+                imageWidth,
+                imageHeight
+            })
+        }
+        center && this.changeToCenter()
     }
 
     /**
      * 设置图片尺寸为 contain
      * @param src {String} 需要操作的图片的 src
-     * @param center {Boolean} 是否需要设置图片默认位置居中
      */
-    changeToContain = (src, center = true) => {
+    changeToContain = (src) => {
+        src = src || this.props.src
         this._getImageOriginSize(src).then(({ width: imageOriginWidth, height: imageOriginHeight }) => {
-            const [ viewportDOM ] = [ this.viewportDOM ]
-            const [ viewPortWidth, viewPortHeight ] = [ viewportDOM.clientWidth, viewportDOM.clientHeight ]
             const { imageWidth, imageHeight } = this.recalcImageSizeToContain(imageOriginWidth, imageOriginHeight)
-            // 设置图片默认位置居中
-            const [ top, left ] = [ center ? (viewPortHeight - imageHeight) / 2 : 0, center ? (viewPortWidth - imageWidth) / 2 : 0 ]
-            center && this.changePosition(left, top)
-
             this.setState({
                 scale: 1,
                 imageWidth,
-                imageHeight,
-                currentLeft: left,
-                currentTop: top,
-                startLeft: left,
-                startTop: top
+                imageHeight
             })
+        }).catch(e => {
+            console.error(e)
+        })
+    }
+
+    /**
+     * 设置图片位置为 center
+     */
+    changeToCenter = () => {
+        const { imageWidth, imageHeight } = this.state
+        if (!imageWidth || !imageHeight) {
+            return setTimeout(this.changeToCenter, 0)
+        }
+
+        const [ viewportDOM ] = [ this.viewportDOM ]
+        const [ viewPortWidth, viewPortHeight ] = [ viewportDOM.clientWidth, viewportDOM.clientHeight ]
+        // 设置图片默认位置居中
+        const [ top, left ] = [ (viewPortHeight - imageHeight) / 2, (viewPortWidth - imageWidth) / 2 ]
+
+        this.setState({
+            currentLeft: left,
+            currentTop: top,
+            startLeft: left,
+            startTop: top
         })
     }
 
@@ -357,14 +388,14 @@ class ReactPictureViewer extends React.Component {
     render() {
         const { id, children, className } = this.props
         return (
-          <div id={id}
-               className={`react-picture-viewer ${className}`}
-               onMouseLeave={this.handleMouseLeave}
-               onMouseDown={this.handleMouseDown}
-               onMouseMove={this.handleMouseMove}
-               onMouseUp={this.handleMouseUp}>
-            {children}
-          </div>
+            <div id={id}
+                 className={`react-picture-viewer ${className}`}
+                 onMouseLeave={this.handleMouseLeave}
+                 onMouseDown={this.handleMouseDown}
+                 onMouseMove={this.handleMouseMove}
+                 onMouseUp={this.handleMouseUp}>
+                {children}
+            </div>
         )
     }
 }

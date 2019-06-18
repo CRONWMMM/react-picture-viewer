@@ -1,6 +1,6 @@
 # react-picture-viewer
 
-An image viewer for React with no dependencies.
+An picture viewer for React with no dependencies.
 
 ![ReactPictureViewer Demo](https://raw.githubusercontent.com/CRONWMMM/react-picture-viewer/master/demo.gif)
 
@@ -35,7 +35,7 @@ class PicViewer extends React.Component {
         <PictureViewer>
           <img src="..." alt="picture" draggable="false" />
         </PictureViewer>
-       </div>
+      </div>
      )
   }
   // ...
@@ -71,6 +71,12 @@ ClassName
 <PictureViewer center>...</PictureViewer>
 ```
 If true then the pictures will be displayed in the middle of the viewport, default to true.
+
+#### contain (optional)
+```js
+<PictureViewer contain>...</PictureViewer>
+```
+If true then the initial size of the picture will be limited to the viewport, else the image will be displayed in the original size (or the size set by css), default to true.
 
 #### width (optional)
 ```js
