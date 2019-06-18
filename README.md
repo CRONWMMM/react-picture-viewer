@@ -27,17 +27,17 @@ import ReactPictureViewer from 'react-picture-viewer'
 ## Example
 ```js
 class PicViewer extends React.Component {
-    // ...
-    
-    render() {
-        return (
-          <div>
-              <PictureViewer>
-                <img src="..." alt="picture" draggable="false" />
-              </PictureViewer>
-          </div>
-        )
-    }
+  // ...
+  render() {
+    return (
+      <div>
+        <PictureViewer>
+          <img src="..." alt="picture" draggable="false" />
+        </PictureViewer>
+       </div>
+     )
+  }
+  // ...
 }
 ```
 
@@ -45,7 +45,7 @@ class PicViewer extends React.Component {
 #### children (required)
 ```js
 <PictureViewer>
-    <img src="..." alt="picture" draggable="false" />
+  <img src="..." alt="picture" draggable="false" />
 </PictureViewer>
 ```
 You should always pass an `<Img />` element as its children.
@@ -53,8 +53,8 @@ You should always pass an `<Img />` element as its children.
 #### id (optional)
 ```js
 <div>
-    <PictureViewer id="picture-viewer1">...</PictureViewer>
-    <PictureViewer id="picture-viewer2">...</PictureViewer>
+  <PictureViewer id="picture-viewer1">...</PictureViewer>
+  <PictureViewer id="picture-viewer2">...</PictureViewer>
 </div>
 ```
 Unique identifier for components, useful when rendering multiple components on a page
