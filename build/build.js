@@ -1,5 +1,4 @@
 const path = require('path')
-const OptimizeCss = require('optimize-css-assets-webpack-plugin')
 
 module.exports = {
     mode: 'production',
@@ -20,12 +19,6 @@ module.exports = {
         rules: [
             {
                 test: /\.js[x]?$/,
-                enforce: 'pre',
-                loader: 'eslint-loader?fix=false',
-                exclude: /node_modules|libs/
-            },
-            {
-                test: /\.js[x]?$/,
                 loader: 'babel-loader',
                 include: path.resolve(__dirname, '../src'),
                 exclude: /node_modules/
@@ -34,21 +27,9 @@ module.exports = {
                 test: /\.css$/,
                 use: [
                     'style-loader?singleton=true',
-                    'css-loader',
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            ident: 'postcss',
-                            plugins: [
-                                require('postcss-cssnext')()
-                            ]
-                        }
-                    }
+                    'css-loader'
                 ]
             }
         ]
-    },
-    plugins: [
-        new OptimizeCss()
-    ]
+    }
 }
