@@ -2,7 +2,7 @@
 
 An image viewer for React with no dependencies.
 
-![ReactPictureViewer Demo](https://github.com/CRONWMMM/react-picture-viewer/blob/master/demo.gif)
+![ReactPictureViewer Demo](https://raw.githubusercontent.com/CRONWMMM/react-picture-viewer/master/demo.gif)
 
 ## Features
 
