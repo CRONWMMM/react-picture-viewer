@@ -1,7 +1,8 @@
 # react-picture-viewer
 
-#### Description
 An image viewer for React with no dependencies.
+
+![ReactPictureViewer Demo](https://github.com/CRONWMMM/react-picture-viewer/blob/master/demo.gif)
 
 ## Features
 
