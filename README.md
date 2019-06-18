@@ -5,11 +5,10 @@ An image viewer for React with no dependencies.
 
 ## Features
 
-- Touch enabled
-- Free-form or fixed aspect crops
-- Keyboard support for nudging selection
-- Min/max crop size
-- No dependencies/small footprint (5KB gzip)
+- You can freely drag picture within the viewport
+- You can freely zoom picture within the viewport
+- Min/max zoom size
+- No dependencies
 
 ## Installation
 ```
@@ -23,10 +22,6 @@ yarn add react-picture-viewer
 Include the main js module:
 ```js
 import ReactPictureViewer from 'react-picture-viewer'
-```
-Include `dist/ReactPictureViewer.css`
-```js
-import 'react-picture-viewer/dist/ReactPictureViewer.css'
 ```
 
 ## Example
