@@ -74,9 +74,10 @@ function isEmpty(obj){
  *
  * @param target {All data types} 参照对象
  * @param obj {All data types} 比较对象
+ * @param exceptKey {String} 不检测掉的对象 key 一旦检测到对象内含有此 key 直接默认相同，返回true
  * @returns {*}
  */
-function isEqual(target, obj) {
+function isEqual(target, obj, exceptKey) {
     if (typeof target !== typeof obj) {
         return false
     } else if (typeof target === 'object') {
@@ -86,7 +87,7 @@ function isEqual(target, obj) {
             if (target.length !== obj.length) { // 长度不同直接 return false
                 return false
             } else { // 否则依次比较每一项
-                return target.every((item, i) => isEqual(item, obj[i]))
+                return target.every((item, i) => isEqual(item, obj[i], exceptKey))
             }
         } else { // 对象
             const targetKeyList = Object.keys(target)
@@ -94,7 +95,7 @@ function isEqual(target, obj) {
             if (targetKeyList.length !== objKeyList.length) { // 如果 keyList 的长度不同直接 return false
                 return false
             } else {
-                return targetKeyList.every((key) => isEqual(target[key], obj[key]))
+                return targetKeyList.every((key) => key === exceptKey || isEqual(target[key], obj[key], exceptKey))
             }
         }
     } else {
