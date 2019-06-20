@@ -1,44 +1,43 @@
 # react-picture-viewer
 
-An picture viewer for React with no dependencies.
+基于 React 封装的图片查看器组件
 
 ![ReactPictureViewer Demo](https://raw.githubusercontent.com/CRONWMMM/react-picture-viewer/master/demo.gif)
 
-English | [简体中文](https://github.com/CRONWMMM/react-picture-viewer/blob/master/README.zh-cn.md)
+简体中文 | [English](https://github.com/CRONWMMM/react-picture-viewer/blob/master/README.md)
 
-## Features
+## 功能
 
-- You can freely drag picture within the viewport
-- You can freely zoom picture within the viewport
-- Min/max zoom size
-- No dependencies
+- 可以在视口范围内自由拖拽图片
+- 可以在视口范围内自由缩放图片
+- 可以设置图片的最大 / 最小缩放尺寸
+- 无任何依赖（除了 `React`）
 
-## Installation
+## 安装
 ```
 npm install react-picture-viewer --save
 ```
-or
+或者
 ```
 yarn add react-picture-viewer
 ```
 
-## Demo
-You can run the project locally to see the demo.
+## 本地 Demo
 ```
 yarn start
 ```
-or
+或者
 ```
 npm run start
 ```
 
-## Usage
-Include the main js module:
+## 使用
+只需要在项目里引入即可
 ```js
 import ReactPictureViewer from 'react-picture-viewer'
 ```
 
-## Example
+## 示例
 ```js
 class PicViewer extends React.Component {
   // ...
@@ -56,74 +55,74 @@ class PicViewer extends React.Component {
 ```
 
 ## Props
-### children (required)
+### children (必传)
 ```js
 <PictureViewer>
   <img src="..." alt="picture" draggable="false" />
 </PictureViewer>
 ```
-You should always pass an `<Img />` element as its children.
+这个 `<Img />` 是必传的
 
-### id (optional)
+### id
 ```js
 <div>
   <PictureViewer id="picture-viewer1">...</PictureViewer>
   <PictureViewer id="picture-viewer2">...</PictureViewer>
 </div>
 ```
-Unique identifier for components, useful when rendering multiple components on a page
+当同一个功能组件里使用到两个 `react-picture-viewer` 的实例，需要传递 `id` 属性进行区分，类似于 `react` 提供的 `key`
 
-### className (optional)
+### className
 ```js
 <PictureViewer className="picture-viewer">...</PictureViewer>
 ```
-ClassName
+样式类名
 
-### center (optional)
+### center
 ```js
 <PictureViewer center>...</PictureViewer>
 ```
-If true then the pictures will be displayed in the middle of the viewport, default to true.
+如果设置为 `true` ，那么图片默认初始位置在视口中间，默认为 `true`
 
-### contain (optional)
+### contain
 ```js
 <PictureViewer contain>...</PictureViewer>
 ```
-If true then the initial size of the picture will be limited to the viewport, else the image will be displayed in the original size, default to true.
+如果设置为 `true` ，那么图片默认初始尺寸将限制在视口范围内，否则图片会按原始尺寸展示，默认为 `true`
 
-### width (optional)
+### width
 ```js
 <PictureViewer width={500}>...</PictureViewer>
 ```
 ```js
 <PictureViewer width="50vw">...</PictureViewer>
 ```
-Width of viewport, it can be `string` or `number`.
+视口宽度，可以是 `string` 或者 `number`.
 
-### height (optional)
+### height
 ```js
 <PictureViewer height={400}>...</PictureViewer>
 ```
 ```js
 <PictureViewer width="40%">...</PictureViewer>
 ```
-Height of viewport, it can be `string` or `number`.
+视口高度，可以是 `string` 或者 `number`.
 
-### minimum (optional)
+### minimum
 ```js
 <PictureViewer minimum={1}>...</PictureViewer>
 ```
-Minimum scaling ratio, default to `0.8`
+最小缩放率, 默认 `0.8`
 
-### maximum (optional)
+### maximum
 ```js
 <PictureViewer maximum={5}>...</PictureViewer>
 ```
-Maximum scaling ratio, default to `8`
+最大缩放率, 默认 `8`
 
-### rate (optional)
+### rate
 ```js
 <PictureViewer rate={20}>...</PictureViewer>
 ```
-The rate of Image Scaling, default to 10. Bigger the number you set, faster the image will zoom in.
+图片缩放速率，设置越大，缩放速率越快
 

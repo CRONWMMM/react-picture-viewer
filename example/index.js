@@ -32,7 +32,7 @@ class Demo extends Component {
     }
 
     render() {
-        const { src1, src2, count } = this.state
+        const { src1, src2 } = this.state
         return (
             <Fragment>
                 <ReactPictureViewer className="viewport" contain center minimum={0.5} maximum={2}>
