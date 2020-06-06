@@ -17,7 +17,8 @@ class ReactPictureViewer extends React.Component {
         children: PropTypes.object.isRequired, // slot 插槽
         className: PropTypes.string, // className
         center: PropTypes.bool, // 图片位置是否初始居中
-        contain: PropTypes.bool // 图片尺寸是否初始包含在视口范围内
+        contain: PropTypes.bool, // 图片尺寸是否初始包含在视口范围内,
+        cover: PropTypes.bool // 图片尺寸是否平铺显示
     }
 
     static defaultProps = {
@@ -27,8 +28,7 @@ class ReactPictureViewer extends React.Component {
         minimum: 0.8,
         maximum: 8,
         rate: 10,
-        center: true,
-        contain: true
+        center: true
     }
 
     state = {
@@ -101,13 +101,15 @@ class ReactPictureViewer extends React.Component {
     initPicture = (nextProps) => {
         nextProps = nextProps || this.props
 
-        const { children: { props: { src } }, center, contain } = nextProps
+        const { children: { props: { src } }, center, contain, cover } = nextProps
         const callback = center ? this.changeToCenter : this.changeToBasePoint
 
         // 这块有个执行顺序
         // 必须是先确定尺寸，再确定位置
         if (contain) {
             this.changeToContain(src, callback)
+        } else if (cover) {
+            this.changeToCover(src, callback)
         } else {
             this._getImageOriginSize(src).then(({ width: imageWidth, height: imageHeight }) => {
                 this.setState({
@@ -161,6 +163,25 @@ class ReactPictureViewer extends React.Component {
     }
 
     /**
+     * 设置图片尺寸为 cover
+     */
+    changeToCover = (src, callback) => {
+        src = src || this.props.src
+        callback = isFunction(callback) ? callback : () => {}
+
+        this._getImageOriginSize(src).then(({ width: imageOriginWidth, height: imageOriginHeight }) => {
+            const { imageWidth, imageHeight } = this.recalcImageSizeToCover(imageOriginWidth, imageOriginHeight)
+            this.setState({
+                scale: 1,
+                imageWidth,
+                imageHeight
+            }, () => { callback(imageWidth, imageHeight) })
+        }).catch(e => {
+            console.error(e)
+        })
+    }
+
+    /**
      * 设置图片位置为基准点位置
      * 基准点位置，基于视口: top: 0 && left: 0
      */
@@ -196,10 +217,22 @@ class ReactPictureViewer extends React.Component {
         }
     }
 
-    /**
-     * 设置图片尺寸为 cover
-     */
-    changeToCover() {} // eslint-disable-line
+    recalcImageSizeToCover = (imageWidth, imageHeight) => {
+        const rate = imageWidth / imageHeight;
+        const viewportDOM = this.viewportDOM
+        const [ viewPortWidth, viewPortHeight ] = [ viewportDOM.clientWidth, viewportDOM.clientHeight ]
+        if (imageWidth >= viewPortWidth && imageHeight >= viewPortHeight) {
+            return { imageWidth, imageHeight }
+        } else if (viewPortWidth / rate < viewPortHeight) {
+            imageHeight = viewPortHeight
+            imageWidth = imageHeight * rate
+            return { imageWidth, imageHeight }
+        } else if (imageHeight * rate < viewPortWidth) {
+            imageWidth = viewPortWidth
+            imageHeight = imageWidth / rate
+            return { imageWidth, imageHeight }
+        }
+    }
 
     /**
      * 改变图片位置

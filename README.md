@@ -8,10 +8,10 @@ English | [简体中文](https://github.com/CRONWMMM/react-picture-viewer/blob/m
 
 ## Features
 
-- You can freely drag picture within the viewport
-- You can freely zoom picture within the viewport
-- Min/max zoom size
-- No dependencies
+* [x] You can freely drag picture within the viewport
+* [x] You can freely zoom picture within the viewport
+* [x] Min/max zoom size
+* [x] No dependencies, except React
 
 ## Installation
 ```
@@ -40,14 +40,16 @@ import ReactPictureViewer from 'react-picture-viewer'
 
 ## Example
 ```js
-class PicViewer extends React.Component {
+import ReactPictureViewer from 'react-picture-viewer';
+
+class Demo extends React.Component {
   // ...
   render() {
     return (
       <div>
-        <PictureViewer>
+        <ReactPictureViewer>
           <img src="..." alt="picture" draggable="false" />
-        </PictureViewer>
+        </ReactPictureViewer>
       </div>
      )
   }
@@ -58,72 +60,72 @@ class PicViewer extends React.Component {
 ## Props
 ### children (required)
 ```js
-<PictureViewer>
+<ReactPictureViewer>
   <img src="..." alt="picture" draggable="false" />
-</PictureViewer>
+</ReactPictureViewer>
 ```
 You should always pass an `<Img />` element as its children.
 
 ### id (optional)
 ```js
 <div>
-  <PictureViewer id="picture-viewer1">...</PictureViewer>
-  <PictureViewer id="picture-viewer2">...</PictureViewer>
+  <ReactPictureViewer id="picture-viewer1">...</ReactPictureViewer>
+  <ReactPictureViewer id="picture-viewer2">...</ReactPictureViewer>
 </div>
 ```
 Unique identifier for components, useful when rendering multiple components on a page
 
 ### className (optional)
 ```js
-<PictureViewer className="picture-viewer">...</PictureViewer>
+<ReactPictureViewer className="picture-viewer">...</ReactPictureViewer>
 ```
 ClassName
 
 ### center (optional)
 ```js
-<PictureViewer center>...</PictureViewer>
+<ReactPictureViewer center>...</ReactPictureViewer>
 ```
 If true then the pictures will be displayed in the middle of the viewport, default to true.
 
 ### contain (optional)
 ```js
-<PictureViewer contain>...</PictureViewer>
+<ReactPictureViewer contain>...</ReactPictureViewer>
 ```
 If true then the initial size of the picture will be limited to the viewport, else the image will be displayed in the original size, default to true.
 
 ### width (optional)
 ```js
-<PictureViewer width={500}>...</PictureViewer>
+<ReactPictureViewer width={500}>...</ReactPictureViewer>
 ```
 ```js
-<PictureViewer width="50vw">...</PictureViewer>
+<ReactPictureViewer width="50vw">...</ReactPictureViewer>
 ```
 Width of viewport, it can be `string` or `number`.
 
 ### height (optional)
 ```js
-<PictureViewer height={400}>...</PictureViewer>
+<ReactPictureViewer height={400}>...</ReactPictureViewer>
 ```
 ```js
-<PictureViewer width="40%">...</PictureViewer>
+<ReactPictureViewer width="40%">...</ReactPictureViewer>
 ```
 Height of viewport, it can be `string` or `number`.
 
 ### minimum (optional)
 ```js
-<PictureViewer minimum={1}>...</PictureViewer>
+<ReactPictureViewer minimum={1}>...</ReactPictureViewer>
 ```
 Minimum scaling ratio, default to `0.8`
 
 ### maximum (optional)
 ```js
-<PictureViewer maximum={5}>...</PictureViewer>
+<ReactPictureViewer maximum={5}>...</ReactPictureViewer>
 ```
 Maximum scaling ratio, default to `8`
 
 ### rate (optional)
 ```js
-<PictureViewer rate={20}>...</PictureViewer>
+<ReactPictureViewer rate={20}>...</ReactPictureViewer>
 ```
 The rate of Image Scaling, default to 10. Bigger the number you set, faster the image will zoom in.
 
