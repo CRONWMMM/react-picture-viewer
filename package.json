@@ -1,8 +1,8 @@
 {
   "name": "react-picture-viewer",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "react-picture-viewer is an image viewer for React.",
-  "main": "dist/ReactPictureViewer.min.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/CRONWMMM/react-picture-viewer"
@@ -21,7 +21,7 @@
     "react-picture-viewer",
     "picture-viewer"
   ],
-  "author": "mitianyi",
+  "author": "Mitianyi",
   "license": "ISC",
   "peerDependencies": {
     "prop-types": ">=15.7.2",

@@ -1,1 +1,1 @@
-export default from './dist/js/ReactPictureViewer.min';
+export default from './dist/ReactPictureViewer.min';
