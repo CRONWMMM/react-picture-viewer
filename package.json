@@ -1,6 +1,6 @@
 {
   "name": "react-picture-viewer",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "react-picture-viewer is an image viewer for React.",
   "main": "index.js",
   "repository": {
