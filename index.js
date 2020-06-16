@@ -1,1 +1,2 @@
-export default from './dist/ReactPictureViewer.min';
+import ReactPictureViewer from './dist/ReactPictureViewer.min';
+export default ReactPictureViewer;
